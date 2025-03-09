@@ -2,9 +2,19 @@ const mongoose = require("mongoose");
 const Order = require("../models/order.model");
 const Payment = require("../models/payment.model");
 const errorCodes = require("../config/errorCodes");
+const userModel = require("../models/user.model");
 
 exports.createOrder = async (req, res) => {
   try {
+    console.log("User from middleware:", req.user); // Debugging log
+
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        error: "AUTH_ERROR",
+        message: "User not authenticated",
+      });
+    }
     const { items, totalAmount, paymentMethod, shippingAddress } = req.body;
 
     if (!items || !totalAmount || !paymentMethod || !shippingAddress) {

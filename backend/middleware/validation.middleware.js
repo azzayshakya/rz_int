@@ -1,4 +1,3 @@
-// server/middleware/validation.middleware.js
 const { z } = require("zod");
 const errorCodes = require("../config/errorCodes");
 
@@ -11,6 +10,16 @@ const errorCodes = require("../config/errorCodes");
 exports.validate = (schema, source = "body") => {
   return (req, res, next) => {
     try {
+      // Check if schema exists
+      if (!schema) {
+        console.error("Validation schema is undefined");
+        return res.status(500).json({
+          success: false,
+          error: errorCodes.SERVER_ERROR,
+          message: "Validation schema is missing",
+        });
+      }
+
       const result = schema.safeParse(req[source]);
 
       if (!result.success) {
@@ -118,41 +127,36 @@ exports.schemas = {
     updateNotes: z.object({
       notes: z.record(z.string()),
     }),
-  },
-  statusUpdate: z.object({
-    status: z.enum([
-      "pending", 
-      "processing", 
-      "shipped", 
-      "delivered", 
-      "cancelled"
-    ], "Invalid order status")
-  }),
-  create: z.object({
-    items: z
-      .array(
-        z.object({
-          // Adjust these fields to match your actual items structure
-          // This is a guess - you should match your Order model
-          productId: z.string().min(1, "Product ID is required"),
-          quantity: z
-            .number()
-            .int()
-            .positive("Quantity must be a positive integer"),
-          price: z.number().positive("Price must be greater than 0"),
-        })
-      )
-      .min(1, "At least one item is required"),
-    totalAmount: z.number().positive("Total amount must be greater than 0"),
-    paymentMethod: z.string().min(1, "Payment method is required"),
-    shippingAddress: z.object({
-      street: z.string().min(1, "Street is required"),
-      city: z.string().min(1, "City is required"),
-      state: z.string().min(1, "State is required"),
-      zipCode: z.string().min(1, "Zip code is required"),
-      country: z.string().min(1, "Country is required"),
+    
+    statusUpdate: z.enum(
+      ["pending", "processing", "shipped", "delivered", "cancelled"],
+      "Invalid order status"
+    ),
+    
+    create: z.object({
+      items: z
+        .array(
+          z.object({
+            name: z.string().min(1, "Product name is required"), // Changed from productId to name
+            quantity: z
+              .number()
+              .int()
+              .positive("Quantity must be a positive integer"),
+            price: z.number().positive("Price must be greater than 0"),
+          })
+        )
+        .min(1, "At least one item is required"),
+      totalAmount: z.number().positive("Total amount must be greater than 0"),
+      paymentMethod: z.string().min(1, "Payment method is required"),
+      shippingAddress: z.object({
+        street: z.string().min(1, "Street is required"),
+        city: z.string().min(1, "City is required"),
+        state: z.string().min(1, "State is required"),
+        zipCode: z.string().min(1, "Zip code is required"),
+        country: z.string().min(1, "Country is required"),
+      }),
     }),
-  }),
+  },
 
   // ID validation for route parameters
   idParam: z.object({
@@ -213,17 +217,28 @@ exports.validateWebhook = (req, res, next) => {
   }
 };
 
-// Validation middlewares
+// Validation middlewares - Define after all schemas
 exports.validateRegistration = exports.validate(exports.schemas.auth.register);
 exports.validateLogin = exports.validate(exports.schemas.auth.login);
+
+// Fix for the order schemas
 exports.validateOrderCreation = exports.validate(exports.schemas.order.create);
-// Add this at the end of the file with the other exports
-exports.validateOrderId = exports.validate(exports.schemas.orderIdParam, "params");
-// Add this with the other validation middleware exports
-exports.validateOrderStatusUpdate = exports.validate(exports.schemas.order.statusUpdate);
+exports.validateOrderId = exports.validate(
+  exports.schemas.orderIdParam,
+  "params"
+);
+exports.validateOrderStatusUpdate = exports.validate(
+  exports.schemas.order.statusUpdate
+);
 
-
-// Add these exports at the end of the file
-exports.validatePaymentOrder = exports.validate(exports.schemas.payment.createOrder);
-exports.validatePaymentVerification = exports.validate(exports.schemas.payment.verifyPayment);
-exports.validateRefundRequest = exports.validate(exports.schemas.payment.processRefund, "body");
+// Payment validation exports
+exports.validatePaymentOrder = exports.validate(
+  exports.schemas.payment.createOrder
+);
+exports.validatePaymentVerification = exports.validate(
+  exports.schemas.payment.verifyPayment
+);
+exports.validateRefundRequest = exports.validate(
+  exports.schemas.payment.processRefund,
+  "body"
+);
