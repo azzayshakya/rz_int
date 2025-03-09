@@ -1,0 +1,56 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-error.log
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Logs
+logs/
+*.log
+debug.log
+error.log
+*.pid
+*.seed
+*.pid.lock
+nohup.out
+
+# Compiled files
+dist/
+build/
+*.cache
+
+# OS/System files
+.DS_Store
+Thumbs.db
+
+# Editor settings
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# MongoDB
+dump/
+data/db/
+*.lock
+
+# Cache and temp files
+.cache/
+.temp/
+out/
+coverage/
+
+# Next.js or Vite specific (if used)
+.next/
+.vercel/
+.vite/

@@ -1,0 +1,66 @@
+project-root/
+├── client/                  # Frontend React application
+│   ├── public/              # Static files
+│   ├── src/
+│   │   ├── assets/          # Images, fonts, etc.
+│   │   ├── components/      # Reusable UI components
+│   │   │   ├── common/      # Generic components (Button, Card, etc.)
+│   │   │   ├── layout/      # Layout components (Header, Footer, etc.)
+│   │   │   └── payment/     # Payment-specific components
+│   │   ├── hooks/           # Custom React hooks
+│   │   ├── lib/             # Utility functions and configurations
+│   │   │   ├── axios.js     # Axios instance setup
+│   │   │   ├── razorpay.js  # Razorpay SDK initialization
+│   │   │   └── validation/  # Zod schemas for validation
+│   │   ├── pages/           # Route components
+│   │   │   ├── Home/
+│   │   │   ├── Checkout/
+│   │   │   ├── PaymentSuccess/
+│   │   │   └── PaymentFailed/
+│   │   ├── store/           # Zustand store
+│   │   │   ├── cartStore.js
+│   │   │   └── paymentStore.js
+│   │   ├── types/           # TypeScript definitions (if using TS)
+│   │   ├── App.jsx
+│   │   ├── index.jsx
+│   │   └── routes.jsx       # React Router configuration
+│   ├── .env.example         # Example environment variables
+│   ├── .gitignore
+│   ├── package.json
+│   └── tailwind.config.js
+│
+├── server/                  # Backend Node.js/Express application
+│   ├── config/              # Configuration files
+│   │   ├── db.js            # MongoDB connection
+│   │   └── razorpay.js      # Razorpay API configuration
+│   ├── controllers/         # Route controllers
+│   │   ├── auth.controller.js
+│   │   ├── order.controller.js
+│   │   └── payment.controller.js
+│   ├── middleware/          # Express middleware
+│   │   ├── auth.middleware.js
+│   │   ├── error.middleware.js
+│   │   └── validation.middleware.js
+│   ├── models/              # MongoDB models
+│   │   ├── user.model.js
+│   │   ├── order.model.js
+│   │   └── payment.model.js
+│   ├── routes/              # API routes
+│   │   ├── auth.routes.js
+│   │   ├── order.routes.js
+│   │   └── payment.routes.js
+│   ├── services/            # Business logic
+│   │   ├── order.service.js
+│   │   └── payment.service.js
+│   ├── utils/               # Utility functions
+│   │   ├── constants.js
+│   │   ├── helpers.js
+│   │   └── validators.js
+│   ├── .env.example         # Example environment variables
+│   ├── .gitignore
+│   ├── app.js               # Express app initialization
+│   ├── package.json
+│   └── server.js            # Entry point
+│
+├── .gitignore
+└── README.md
