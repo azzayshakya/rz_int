@@ -95,44 +95,52 @@ exports.schemas = {
   },
 
   // Payment schemas
-  payment: {
-    createOrder: z.object({
-      amount: z.number().positive("Amount must be greater than 0"),
-      currency: z.string().default("INR"),
-      notes: z.record(z.string()).optional(),
-      prefill: z
-        .object({
-          name: z.string().optional(),
-          email: z.string().email("Invalid email").optional(),
-          contact: z.string().optional(),
-        })
-        .optional(),
+ // Payment schemas
+payment: {
+  createOrder: z.object({
+    amount: z.number().positive("Amount must be greater than 0"),
+    currency: z.string().default("INR"),
+    notes: z.record(z.string()).optional(),
+    prefill: z
+      .object({
+        name: z.string().optional(),
+        email: z.string().email("Invalid email").optional(),
+        contact: z.string().optional(),
+      })
+      .optional(),
+    // Add these fields to match your Order model requirements
+    shippingAddress: z.object({
+      street: z.string().min(1, "Street is required"),
+      city: z.string().min(1, "City is required"),
+      state: z.string().min(1, "State is required"),
+      zipCode: z.string().min(1, "Zip code is required"),
     }),
-
-    verifyPayment: z.object({
-      razorpay_order_id: z.string(),
-      razorpay_payment_id: z.string(),
-      razorpay_signature: z.string(),
-    }),
-
-    processRefund: z.object({
-      paymentId: z.string(),
-      amount: z.number().positive("Amount must be greater than 0").optional(),
-      notes: z.record(z.string()).optional(),
-    }),
-  },
+    totalAmount: z.number().positive("Total amount must be greater than 0"),
+  }),
+  // other schemas remain the same
+  verifyPayment: z.object({
+    razorpay_order_id: z.string(),
+    razorpay_payment_id: z.string(),
+    razorpay_signature: z.string(),
+  }),
+  processRefund: z.object({
+    paymentId: z.string(),
+    amount: z.number().positive("Amount must be greater than 0").optional(),
+    notes: z.record(z.string()).optional(),
+  }),
+},
 
   // Order schemas
   order: {
     updateNotes: z.object({
       notes: z.record(z.string()),
     }),
-    
+
     statusUpdate: z.enum(
       ["pending", "processing", "shipped", "delivered", "cancelled"],
       "Invalid order status"
     ),
-    
+
     create: z.object({
       items: z
         .array(

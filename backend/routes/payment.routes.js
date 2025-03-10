@@ -40,19 +40,19 @@ router.get(
 );
 
 // Process refund
-router.post(
-  "/:paymentId/refund",
-  authMiddleware.protect,
-  validationMiddleware.validateRefundRequest,
-  paymentController.processRefund
-);
+// router.post(
+//   "/:paymentId/refund",
+//   authMiddleware.protect,
+//   validationMiddleware.validateRefundRequest,
+//   paymentController.processRefund
+// );
 
-// Get refund status
-router.get(
-  "/refund/:refundId",
-  authMiddleware.protect,
-  paymentController.getRefundStatus
-);
+// // Get refund status
+// router.get(
+//   "/refund/:refundId",
+//   authMiddleware.protect,
+//   paymentController.getRefundStatus
+// );
 
 // Get all payments
 router.get("/", authMiddleware.protect, paymentController.getUserPayments);
